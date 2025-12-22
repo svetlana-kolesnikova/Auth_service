@@ -139,3 +139,11 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
 }
+
+
+AUTHENTICATION_CLASSES = [
+    "rest_framework.authentication.SessionAuthentication",
+]
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
