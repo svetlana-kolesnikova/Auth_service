@@ -1,0 +1,63 @@
+[project]
+name = "auth-service"
+version = "0.1.0"
+description = "Authorization service with phone number and referral system"
+authors = [
+    {name = "svetlana-kolesnikova",email = "sv.ps1286@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "django (>=6.0,<7.0)",
+    "djangorestframework (>=3.16.1,<4.0.0)",
+    "psycopg2 (>=2.9.11,<3.0.0)",
+    "python-dotenv (>=1.2.1,<2.0.0)",
+    "requests (>=2.32.5,<3.0.0)",
+    "drf-spectacular (>=0.29.0,<0.30.0)",
+    "gunicorn (>=23.0.0,<24.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.lint.dependencies]
+flake8 = "^7.3.0"
+black = "^25.12.0"
+mypy = "^1.19.1"
+isort = "^7.0.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^9.0.2"
+pytest-django = "^4.11.1"
+coverage = "^7.13.0"
+
+[tool.mypy]
+disallow_untyped_defs = true
+warn_return_any = true
+exclude = "venv"
+
+[tool.black]
+# Максимальная длина строки
+line-length = 119
+# Файлы, которые не нужно форматировать
+exclude = '''
+(
+  /(
+      \.git          # Исключить несколько общих каталогов
+                     # в корне проекта
+  )/
+)
+'''
+
+[tool.isort]
+# максимальная длина строки
+line_length = 119
+
+[tool.coverage.report]
+# исключение для покрытия тестами
+exclude_also = [
+    "if __name__ == .__main__.:",
+    ]
