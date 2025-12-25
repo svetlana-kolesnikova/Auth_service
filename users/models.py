@@ -83,6 +83,15 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+
+    def __str__(self) -> str:
+        """Возвращает строковое представление пользователя."""
+        return f"{self.phone} ({self.invite_code})"
+
+
     def save(self, *args, **kwargs) -> None:
         """
         При первом сохранении генерирует уникальный инвайт-код.
@@ -97,3 +106,8 @@ class User(AbstractUser):
                     self.invite_code = code
                     break
         super().save(*args, **kwargs)
+
+    def has_used_invite(self) -> bool:
+        """Проверяет, активировал ли пользователь инвайт-код."""
+        return self.used_invite is not None
+
