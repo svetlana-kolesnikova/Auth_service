@@ -18,7 +18,7 @@ load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -91,6 +91,7 @@ DATABASES = {
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": os.getenv("POSTGRES_HOST"),
         "PORT": os.getenv("POSTGRES_PORT"),
+
     }
 }
 
@@ -154,7 +155,39 @@ SPECTACULAR_SETTINGS: dict = {
     "SERVE_INCLUDE_SCHEMA": False,
 }
 
+# Messages
+from django.contrib.messages import constants as messages_constants
+
+MESSAGE_TAGS = {
+    messages_constants.DEBUG: "alert-secondary",
+    messages_constants.INFO: "alert-info",
+    messages_constants.SUCCESS: "alert-success",
+    messages_constants.WARNING: "alert-warning",
+    messages_constants.ERROR: "alert-danger",
+}
 
 # SMS AERO
 SMSAERO_LOGIN: str = os.getenv("SMSAERO_LOGIN")
 SMSAERO_API_KEY: str = os.getenv("SMSAERO_API_KEY")
+
+
+# Redis / Celery (если понадобится)
+REDIS_HOST: str = os.getenv("REDIS_HOST", "redis")
+REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
+CELERY_BROKER_URL: str = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+CELERY_RESULT_BACKEND: str = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+
+
+# Sessions (можно использовать Redis)
+SESSION_ENGINE: str = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS: str = "default"
+
+
+# Cache (Redis)-
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+    }
+}
