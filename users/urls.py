@@ -1,6 +1,8 @@
 # users/urls.py
 
 from django.urls import path
+from django.contrib.auth.views import LogoutView
+
 from .views import (
     LoginTemplateView,
     VerifyCodeTemplateView,
@@ -20,6 +22,7 @@ urlpatterns: list = [
     path("login/", LoginTemplateView.as_view(), name="login"),
     path("verify/", VerifyCodeTemplateView.as_view(), name="verify"),
     path("profile/", ProfileTemplateView.as_view(), name="profile"),
+    path("logout/", LogoutView.as_view(next_page="users:login"), name="logout"),
 
     # -------------------------
     # API Views

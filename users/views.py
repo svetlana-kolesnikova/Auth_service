@@ -5,6 +5,7 @@ import random
 import time
 from typing import Any
 
+
 import requests
 from django.contrib import messages
 from django.contrib.auth import login
@@ -155,6 +156,20 @@ class ActivateInviteView(APIView):
         serializer.is_valid(raise_exception=True)
 
         inviter: User = User.objects.get(invite_code=serializer.validated_data["invite_code"])
+
+        # --- Проверка на свой код ---
+        if inviter == request.user:
+            return Response(
+                {"detail": "Вы не можете активировать свой собственный инвайт-код"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if request.user.has_used_invite():
+            return Response(
+                {"detail": "Инвайт-код уже активирован"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         request.user.used_invite = inviter
         request.user.save()
 
