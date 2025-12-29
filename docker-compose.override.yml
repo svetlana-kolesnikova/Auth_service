@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  web:
+    # Не запускаем gunicorn, а переопределяем entrypoint
+    entrypoint: ""
+    command: python -m coverage run --source=users,config manage.py test
+    volumes:
+      # Монтируем папку для отчёта на локальный диск
+      - ./htmlcov:/app/htmlcov
