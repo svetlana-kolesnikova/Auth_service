@@ -30,16 +30,20 @@ from drf_spectacular.views import (
 urlpatterns: list = [
     # Django admin
     path("admin/", admin.site.urls),
-    # Users app
-    path("", include("users.urls")),
+
+    # Users app (с namespace)
+    path("", include(("users.urls", "users"), namespace="users")),
+
     # OpenAPI schema
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+
     # Swagger UI
     path(
         "api/docs/swagger/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
+
     # ReDoc UI
     path(
         "api/docs/redoc/",
