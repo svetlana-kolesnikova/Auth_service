@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   web:
     # Не запускаем gunicorn, а переопределяем entrypoint
