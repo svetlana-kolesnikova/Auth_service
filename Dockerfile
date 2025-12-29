@@ -4,53 +4,65 @@
 FROM python:3.13-slim
 
 # ----------------------------
-# Environment
+# Environment variables
 # ----------------------------
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV DJANGO_SETTINGS_MODULE=config.settings
+ENV PYTHONUNBUFFERED=1 \
+    POETRY_VERSION=2.1.4 \
+    PIP_NO_CACHE_DIR=1 \
+    POETRY_VIRTUALENVS_CREATE=false
 
 # ----------------------------
-# System dependencies
+# Install system dependencies
 # ----------------------------
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
     curl \
+    git \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
 # ----------------------------
-# Poetry
+# Install Poetry
 # ----------------------------
-ENV POETRY_VERSION=2.1.4
 RUN pip install --no-cache-dir "poetry==$POETRY_VERSION"
-RUN poetry config virtualenvs.create false
 
 # ----------------------------
-# Workdir
+# Set working directory
 # ----------------------------
 WORKDIR /app
 
 # ----------------------------
-# Install dependencies
+# Copy project files
 # ----------------------------
 COPY pyproject.toml poetry.lock* /app/
+
+# ----------------------------
+# Install Python dependencies
+# ----------------------------
 RUN poetry install --no-interaction --no-ansi
 
 # ----------------------------
-# Project files
+# Copy project source code
 # ----------------------------
 COPY . /app/
 
 # ----------------------------
-# Collect static files
+# Create directories for static and media files
 # ----------------------------
-RUN python manage.py collectstatic --noinput --clear
+RUN mkdir -p /app/static /app/media
 
 # ----------------------------
-# Entrypoint for migrations + run
+# Make entrypoint executable
 # ----------------------------
-COPY ./entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-CMD ["/app/entrypoint.sh"]
+# ----------------------------
+# Expose port
+# ----------------------------
+EXPOSE 8000
+
+# ----------------------------
+# Entrypoint
+# ----------------------------
+ENTRYPOINT ["/app/entrypoint.sh"]
