@@ -12,6 +12,13 @@ class PhoneAuthForm(forms.Form):
     phone: forms.CharField = forms.CharField(
         max_length=15,
         label="Номер телефона",
+        help_text="7XXXXXXXXXX",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "7XXXXXXXXXX",
+            }
+        ),
     )
 
 

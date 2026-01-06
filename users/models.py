@@ -60,6 +60,7 @@ class User(AbstractUser):
         max_length=15,
         unique=True,
         verbose_name="Номер телефона",
+        help_text="7XXXXXXXXXX"
     )
 
     invite_code = models.CharField(

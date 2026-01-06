@@ -5,6 +5,8 @@ import random
 import time
 from typing import Any
 
+from django.contrib.auth import logout
+from django.views import View
 
 import requests
 from django.contrib import messages
@@ -174,6 +176,20 @@ class ActivateInviteView(APIView):
         request.user.save()
 
         return Response({"detail": "Инвайт-код активирован"}, status=status.HTTP_200_OK)
+
+
+# ------------------------------
+# Logout View
+# ------------------------------
+
+class LogoutView(View):
+    """
+    Выход пользователя из профиля.
+    При POST-запросе выполняется logout и перенаправление на страницу логина.
+    """
+    def post(self, request, *args, **kwargs):
+        logout(request)
+        return redirect("users:login")
 
 
 # ------------------------------

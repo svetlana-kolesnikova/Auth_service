@@ -19,6 +19,11 @@
                     <div class="mb-3">
                         {{ form.phone.label_tag }}
                         {{ form.phone }}
+                        {% if form.phone.help_text %}
+                            <div class="form-text">
+                                Формат: {{ form.phone.help_text }}
+                            </div>
+                        {% endif %}
                         {% if form.phone.errors %}
                             <div class="text-danger small">{{ form.phone.errors }}</div>
                         {% endif %}
