@@ -1,10 +1,9 @@
-# users/tests.py
 from __future__ import annotations
-from typing import Any
-from unittest.mock import patch, Mock
+
+from unittest.mock import Mock, patch
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase, Client
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from .models import User

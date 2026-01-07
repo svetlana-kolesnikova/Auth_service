@@ -1,45 +1,37 @@
-# users/views.py
-
 from __future__ import annotations
+
 import random
 import time
 from typing import Any
 
-from django.contrib.auth import logout
-from django.views import View
-
 import requests
-from django.contrib import messages
-from django.contrib.auth import login
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
-from django.views.generic import FormView, TemplateView
 from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
-
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import FormView, TemplateView
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .forms import PhoneAuthForm, PhoneVerifyForm, InviteActivateForm
+from .forms import InviteActivateForm, PhoneAuthForm, PhoneVerifyForm
 from .models import User
-from .serializers import (
-    PhoneAuthSerializer,
-    PhoneVerifySerializer,
-    InviteActivateSerializer,
-    ProfileSerializer,
-)
-
+from .serializers import InviteActivateSerializer, PhoneAuthSerializer, PhoneVerifySerializer, ProfileSerializer
 
 # ------------------------------
 # SMS Client
 # ------------------------------
 
+
 class SMSAeroClient:
     """
     Клиент для отправки SMS через SMS Aero.
     """
+
     BASE_URL: str = "https://gate.smsaero.ru/v2/sms/send"
 
     @staticmethod
@@ -67,6 +59,7 @@ class SMSAeroClient:
 # ------------------------------
 # Helper functions
 # ------------------------------
+
 
 def send_auth_code(phone: str, request: HttpRequest) -> None:
     """
@@ -97,10 +90,12 @@ def verify_code(phone: str, code: str, request: HttpRequest) -> User | None:
 # API Views
 # ------------------------------
 
+
 class PhoneAuthView(APIView):
     """
     API для начала авторизации по номеру телефона.
     """
+
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, *args, **kwargs) -> Response:
@@ -116,6 +111,7 @@ class PhoneVerifyView(APIView):
     """
     API для подтверждения SMS-кода.
     """
+
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, *args, **kwargs) -> Response:
@@ -136,6 +132,7 @@ class ProfileView(APIView):
     """
     API профиля пользователя.
     """
+
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs) -> Response:
@@ -147,12 +144,12 @@ class ActivateInviteView(APIView):
     """
     API активации инвайт-кода.
     """
+
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs) -> Response:
         if request.user.has_used_invite():
-            return Response({"detail": "Инвайт-код уже активирован"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Инвайт-код уже активирован"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = InviteActivateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -162,15 +159,11 @@ class ActivateInviteView(APIView):
         # --- Проверка на свой код ---
         if inviter == request.user:
             return Response(
-                {"detail": "Вы не можете активировать свой собственный инвайт-код"},
-                status=status.HTTP_400_BAD_REQUEST
+                {"detail": "Вы не можете активировать свой собственный инвайт-код"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         if request.user.has_used_invite():
-            return Response(
-                {"detail": "Инвайт-код уже активирован"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "Инвайт-код уже активирован"}, status=status.HTTP_400_BAD_REQUEST)
 
         request.user.used_invite = inviter
         request.user.save()
@@ -182,11 +175,13 @@ class ActivateInviteView(APIView):
 # Logout View
 # ------------------------------
 
+
 class LogoutView(View):
     """
     Выход пользователя из профиля.
     При POST-запросе выполняется logout и перенаправление на страницу логина.
     """
+
     def post(self, request, *args, **kwargs):
         logout(request)
         return redirect("users:login")
@@ -196,10 +191,12 @@ class LogoutView(View):
 # HTML Template Views
 # ------------------------------
 
+
 class LoginTemplateView(FormView):
     """
     HTML-страница ввода номера телефона.
     """
+
     template_name: str = "users/login.html"
     form_class = PhoneAuthForm
     success_url = reverse_lazy("users:verify")
@@ -219,6 +216,7 @@ class VerifyCodeTemplateView(FormView):
     """
     HTML-страница подтверждения SMS-кода.
     """
+
     template_name: str = "users/verify_code.html"
     form_class = PhoneVerifyForm
     success_url = reverse_lazy("users:profile")
@@ -241,6 +239,7 @@ class ProfileTemplateView(LoginRequiredMixin, TemplateView):
     """
     HTML-страница профиля пользователя с активацией инвайт-кода.
     """
+
     template_name: str = "users/profile.html"
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:

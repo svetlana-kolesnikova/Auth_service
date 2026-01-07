@@ -1,5 +1,3 @@
-# users/models.py
-
 from __future__ import annotations
 
 from typing import Optional
@@ -56,12 +54,7 @@ class User(AbstractUser):
     username = None
     email = None
 
-    phone = models.CharField(
-        max_length=15,
-        unique=True,
-        verbose_name="Номер телефона",
-        help_text="7XXXXXXXXXX"
-    )
+    phone = models.CharField(max_length=15, unique=True, verbose_name="Номер телефона", help_text="7XXXXXXXXXX")
 
     invite_code = models.CharField(
         max_length=6,
@@ -92,7 +85,6 @@ class User(AbstractUser):
         """Возвращает строковое представление пользователя."""
         return f"{self.phone} ({self.invite_code})"
 
-
     def save(self, *args, **kwargs) -> None:
         """
         При первом сохранении генерирует уникальный инвайт-код.
@@ -111,4 +103,3 @@ class User(AbstractUser):
     def has_used_invite(self) -> bool:
         """Проверяет, активировал ли пользователь инвайт-код."""
         return self.used_invite is not None
-
