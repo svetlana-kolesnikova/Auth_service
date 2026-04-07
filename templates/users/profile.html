@@ -1,0 +1,66 @@
+{% extends "users/base.html" %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Мой профиль</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Телефон:</strong><br>{{ profile.phone }}</li>
+                    <li class="list-group-item"><strong>Мой инвайт-код:</strong><br>
+                        <span class="badge bg-primary fs-6">{{ profile.invite_code }}</span>
+                    </li>
+                    <li class="list-group-item"><strong>Использованный инвайт:</strong><br>
+                        {% if request.user.has_used_invite %}
+                            {{ profile.used_invite }}
+                        {% else %}
+                            <span class="text-muted">Не активирован</span>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        {% if not request.user.has_used_invite %}
+        <div class="card shadow-sm mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Активировать инвайт</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ invite_form.non_field_errors }}
+                    <div class="mb-3">
+                        {{ invite_form.invite_code }}
+                        {% if invite_form.invite_code.errors %}
+                            <div class="text-danger small">{{ invite_form.invite_code.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        Активировать
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Пользователи, активировавшие мой инвайт</h5>
+                {% if profile.invited_users %}
+                    <ul class="list-group list-group-flush">
+                        {% for phone in profile.invited_users %}
+                            <li class="list-group-item">{{ phone }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted mt-3">Пока никто не использовал ваш инвайт-код.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

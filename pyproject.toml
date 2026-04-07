@@ -1,21 +1,25 @@
-[project]
+[tool.poetry]
 name = "auth-service"
 version = "0.1.0"
 description = "Authorization service with phone number and referral system"
-authors = [
-    {name = "svetlana-kolesnikova",email = "sv.ps1286@gmail.com"}
-]
+authors = ["svetlana-kolesnikova <sv.ps1286@gmail.com>"]
+
+package-mode = false
+
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "django (>=6.0,<7.0)",
-    "djangorestframework (>=3.16.1,<4.0.0)",
-    "psycopg2 (>=2.9.11,<3.0.0)",
-    "python-dotenv (>=1.2.1,<2.0.0)",
-    "requests (>=2.32.5,<3.0.0)",
-    "drf-spectacular (>=0.29.0,<0.30.0)",
-    "gunicorn (>=23.0.0,<24.0.0)"
-]
+
+[tool.poetry.dependencies]
+python = ">=3.13"
+django = ">=6.0,<7.0"
+djangorestframework = ">=3.16.1,<4.0.0"
+psycopg2 = ">=2.9.11,<3.0.0"
+python-dotenv = ">=1.2.1,<2.0.0"
+requests = ">=2.32.5,<3.0.0"
+drf-spectacular = ">=0.29.0,<0.30.0"
+gunicorn = ">=23.0.0,<24.0.0"
+django-filter = ">=25.2,<26.0"
+redis = "^7.1.0"
+django-redis = "^6.0.0"
 
 
 [build-system]
@@ -33,6 +37,7 @@ isort = "^7.0.0"
 pytest = "^9.0.2"
 pytest-django = "^4.11.1"
 coverage = "^7.13.0"
+pytest-cov = "^7.0.0"
 
 [tool.mypy]
 disallow_untyped_defs = true

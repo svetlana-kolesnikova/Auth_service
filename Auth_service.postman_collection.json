@@ -1,0 +1,106 @@
+{
+  "info": {
+    "name": "Auth Service API",
+    "description": "Postman collection для авторизации по телефону, профиля и системы инвайтов",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Send auth code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"79990001122\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/phone-auth/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "phone-auth"]
+            }
+          }
+        },
+        {
+          "name": "Verify auth code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"79990001122\",\n  \"code\": \"1234\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/phone-verify/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "phone-verify"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/profile/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invite",
+      "item": [
+        {
+          "name": "Activate invite code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invite_code\": \"ABC123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/invite/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "invite"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
